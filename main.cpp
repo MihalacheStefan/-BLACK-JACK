@@ -8,14 +8,16 @@ const string Ranks[13] = {"Ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "
 const string Colors[4] = {"hearts","diamonds","clubs","spades"};
 
 bool CardsDealt[52];        // cartile tratate
-
+void introduction();
 
 int NewCard();
 
 int main()
 {
-    srand(time(NULL));          //carti random
-    cout<<NewCard()<<endl;
+    srand(time(NULL));
+    introduction();
+    cout<< "                        Press ENTER to continue!"<<endl;
+    cin.get();
     return 0;
 }
 int NewCard()
@@ -38,4 +40,22 @@ int NewCard()
         }
     }
     return newc ;
+}
+void introduction()
+{
+
+cout<<"'|| '||'  '|'         '||                                          .           "<<endl;
+cout<<" '|. '|.  .'    ....   ||    ....    ...   .. .. ..     ....     .||.    ...   "<<endl;
+cout<<"  ||  ||  |   .|...||  ||  .|   '' .|  '|.  || || ||  .|...||     ||   .|  '|. "<<endl;
+cout<<"   ||| |||    ||       ||  ||      ||   ||  || || ||  ||          ||   ||   || "<<endl;
+cout<<"    |   |      '|...' .||.  '|...'  '|..|' .|| || ||.  '|...'     '|.'  '|..|' "<<endl;
+
+
+cout<<"     '||      '||                  '||         ||                 '||       " <<endl;
+cout<<"      || ...   ||   ....     ....   ||  ..    ...  ....     ....   ||  ..   " <<endl;
+cout<<"      ||'  ||  ||  '' .||  .|   ''  || .'      || '' .||  .|   ''  || .'    " <<endl;
+cout<<"      ||    |  ||  .|' ||  ||       ||'|.      || .|' ||  ||       ||'|.    " <<endl;
+cout<<"      '|...'  .||. '|..'|'  '|...' .||. ||.    || '|..'|'  '|...' .||. ||.  " <<endl;
+cout<<"                                            .. |'                           " <<endl;
+cout<<"                                              ''                            " <<endl;
 }
