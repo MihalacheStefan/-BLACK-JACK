@@ -8,10 +8,14 @@ const string Ranks[13] = {"Ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "
 const string Colors[4] = {"hearts","diamonds","clubs","spades"};
 
 bool CardsDealt[52];        // cartile tratate
+
 void introduction();
 void Menu();
 void Rules();
 int NewCard();
+void Player_vs_Computer();
+bool Can_continue(char name[41]);
+int restore_value();
 
 int main()
 {
@@ -22,13 +26,12 @@ int main()
     system("cls");
     int optiune;
     do {
-
             Menu();
             cin>>optiune;
             if(optiune == 1)
                 Rules();
             if(optiune == 2)
-                ;
+                Player_vs_Computer();
             if(optiune == 3)
                 ;
             system("cls");
@@ -105,7 +108,45 @@ void Rules()
     cin.get();
 
 }
+void Player_vs_Computer()
+{
+    system("cls");
+    cout<<"Enter your name :\n";
+    cin.get();
+    char name[41];
+    int Value = 20;
+    cin>>name;
+    bool decision_continue = false;
+    if(Can_continue(name) == true)
+    {
+        cout<<"\n\t Do you want to continue ?\n";
+        char decision;
+        cin>>decision;
+        if(decision == 'y' || decision == 'Y')
+        {
+            Value = restore_value();
+            if(Value == 0)
+                Value = 20;
+            decision_continue = true;
+        }
+    }
+    cout<<"Your sum is : "<<Value<<endl;
+    int bet;
 
 
+
+    //if(decision_continue == false)    la final adaug in fisier sau modific existentul
+
+
+}
+bool Can_continue(char name[41])
+{
+
+    return false;
+}
+int restore_value()
+{
+    return 0;
+}
 
 
