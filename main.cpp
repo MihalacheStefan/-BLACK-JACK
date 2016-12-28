@@ -16,6 +16,9 @@ int NewCard();
 void Player_vs_Computer();
 bool Can_continue(char name[41]);
 int restore_value();
+int Score(int Cards[] , int number);
+int Points( int card );
+
 
 int main()
 {
@@ -130,9 +133,26 @@ void Player_vs_Computer()
             decision_continue = true;
         }
     }
-    cout<<"Your sum is : "<<Value<<endl;
+    cout<<"\n\t Your sum is : "<<Value<<endl;
     int bet;
+    cout<<"\n\t How much do you want to bet ?\n";
+    cin>>bet;
+    while(bet<1 || bet > Value)
+    {
+        cout<<"Enter a bet between 1 and "<<Value<<endl;
+        cin>>bet;
+    }
 
+    int PlayerCards[20] , HousCards[20] , NumbercardsP , NumbercardsH , ScoreP ,ScoreH ;
+
+    PlayerCards[0] = NewCard();
+    PlayerCards[1] = NewCard();
+    NumbercardsP = 2;
+    HousCards[0] = NewCard();
+    HousCards[1] = NewCard();
+    NumbercardsH = 2;
+    ScoreP = Score(PlayerCards , NumbercardsP);
+    ScoreH = Score(HousCards , NumbercardsH);
 
 
     //if(decision_continue == false)    la final adaug in fisier sau modific existentul
@@ -148,5 +168,31 @@ int restore_value()
 {
     return 0;
 }
+int Score(int Cards[] , int number)
+{
+    int sum = 0 , valcurent, aces = 0;
+    for(int i=0;i<number;i++)
+    {
+        valcurent = Points(Cards[i]);
+        sum += valcurent;
+        if(Cards[i] % 13 == 0)
+            aces ++;
+    }
+    if (sum < 12 && aces != 0 )
+        sum += 10;
+    return sum;
+}
+int Points( int card )
+{
+    int remnat = card %13 ;
+    if(remnat == 0)
+        return 1;
+    if(remnat < 10)
+        return remnat + 1 ;
+    return 10;
+}
+
+
+
 
 
