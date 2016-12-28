@@ -18,7 +18,7 @@ bool Can_continue(char name[41]);
 int restore_value();
 int Score(int Cards[] , int number);
 int Points( int card );
-
+void print_card(int number);
 
 int main()
 {
@@ -154,7 +154,14 @@ void Player_vs_Computer()
     ScoreP = Score(PlayerCards , NumbercardsP);
     ScoreH = Score(HousCards , NumbercardsH);
 
-
+    cout<<"\n Your Cards are :\n\n";
+    for(int i=0;i<NumbercardsP;i++)
+        print_card(PlayerCards[i]);
+    cout<<"\n Your score is : "<<ScoreP;
+    cout<<"\n\n\n Dealer second card is : \n";
+    print_card(HousCards[1]);
+    cin.get();
+    cin.get();
     //if(decision_continue == false)    la final adaug in fisier sau modific existentul
 
 
@@ -191,8 +198,13 @@ int Points( int card )
         return remnat + 1 ;
     return 10;
 }
+void print_card(int number)
+{
+    int color = number / 13;
+    int rankk = number % 13;
+    cout<<Ranks[rankk]<<" of "<<Colors[color]<<endl;
 
-
+}
 
 
 
