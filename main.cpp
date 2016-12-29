@@ -7,8 +7,9 @@ using namespace std;
 const string Ranks[13] = {"Ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King"};
 const string Colors[4] = {"hearts","diamonds","clubs","spades"};
 
-bool CardsDealt[52];        // cartile tratate
+bool CardsDealt[52];
 
+void shuffle();
 void introduction();
 void Menu();
 void Rules();
@@ -137,7 +138,6 @@ void Player_vs_Computer()
 
     Player_vs_Computer_Game(Value);
 
-
     while(Value != 0)
     {
         cout<<"\n\n Do you want to play again ?\n";
@@ -145,12 +145,17 @@ void Player_vs_Computer()
         char play_again;
         cin>>play_again;
         if(play_again == 'y' || play_again == 'Y' )
-            Player_vs_Computer_Game(Value);
-
+           {
+                shuffle();
+                Player_vs_Computer_Game(Value);
+           }
+        else
+            return ;
     }
     if(Value == 0)
     {
-        cout<<"\n You lost all money ! \n\n Press ENTER to go back to Menu : ";
+        cout<<"\n\n\n\t You lost all money ! \n\n Press ENTER to go back to Menu : ";
+        cin.get();
         cin.get();
         return ;
     }
@@ -162,6 +167,7 @@ void Player_vs_Computer()
 }
 void Player_vs_Computer_Game(int & Value)
 {
+    system("cls");
     cout<<"\n\t Your sum is : "<<Value<<endl;
     int bet;
     cout<<"\n\t How much do you want to bet ?\n\n\t";
@@ -187,8 +193,16 @@ void Player_vs_Computer_Game(int & Value)
 
     cout<<"\n\n\n Dealer second card is : \n\n";
     Print_card(HousCards[1]);
-    cin.get();
-    cin.get();
+
+    if(ScoreP == 21)
+    {
+        cout<<"\n\t\t BLACKJACK - 21 \n\n";
+        cout<<"\t You win "<<bet<<" $ !\n\n";
+        Value = Value + bet;
+        cout<<"\n\n Your sum now is : "<<Value;
+        return;
+    }
+
     char wantcard ;
     cout<<"\n\n Do you want another card ? \n Yes (y) , No (n)\n\t";
     cin>>wantcard;
@@ -199,10 +213,14 @@ void Player_vs_Computer_Game(int & Value)
 
         Print_current_cards_and_score(PlayerCards , NumbercardsP);
         ScoreP = Score(PlayerCards , NumbercardsP);
-        cout<<"\n\n Do you want another card ? \n Yes (y) , No (n)\n\t";
-        cin>>wantcard;
-        if(wantcard == 'n' ||wantcard == 'N')
-            break;
+        if(ScoreP < 22)
+        {
+            cout<<"\n\n Do you want another card ? \n Yes (y) , No (n)\n\t";
+            cin>>wantcard;
+            if(wantcard == 'n' ||wantcard == 'N')
+                break;
+        }
+        else wantcard = 'n';
     }
 
     if(ScoreP > 21)
@@ -223,15 +241,40 @@ void Player_vs_Computer_Game(int & Value)
     cout<<"\n Dealer's score is : " << ScoreH <<"\n\n";
     if(ScoreH > 21)
     {
-        cout<<"\t You win "<<bet<<" $\n";
+        cout<<"\t You win "<<bet<<" $ !\n";
         Value = Value + bet;
+        cout<<"\n\n Your sum now is : "<<Value;
     }
     else
     if(ScoreP == ScoreH)
         cout<<"\n It's draw !\n\n";
     else if(ScoreP == 21)
     {
-        cout<<"";
+        cout<<"\n\t\t BLACKJACK - 21 \n\n";
+        cout<<"\t You win "<<bet<<" $ !\n\n";
+        Value = Value + bet;
+        cout<<"\n\n Your sum now is : "<<Value;
+    }
+    else if(ScoreH == 21)
+    {
+        cout<<"\n\t You lost "<<bet<<" $ !\n";
+        Value = Value - bet;
+        cout<<"\n\n Your sum now is : "<<Value;
+    }
+    else
+    {
+        if(ScoreP >ScoreH)
+        {
+            cout<<"\t You win "<<bet<<" $ !\n\n";
+            Value = Value + bet;
+            cout<<"\n\n Your sum now is : "<<Value;
+        }
+        else
+        {
+            cout<<"\n\t You lost "<<bet<<" $ !\n";
+            Value = Value - bet;
+            cout<<"\n\n Your sum now is : "<<Value;
+        }
     }
 
 
@@ -283,6 +326,9 @@ void Print_current_cards_and_score(int cards[] , int numbercards)
         Print_card(cards[i]);
     cout<<"\n Your score is : "<<ScoreCurrent<<endl;
 }
-
-
+void shuffle()
+{
+    for(int i=0;i<52;i++)
+        CardsDealt[i] = false;
+}
 
