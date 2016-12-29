@@ -18,8 +18,9 @@ bool Can_continue(char name[41]);
 int restore_value();
 int Score(int Cards[] , int number);
 int Points( int card );
-void print_card(int number);
-
+void Print_card(int number);
+void Print_current_cards_and_score(int cards[] , int numbercards);
+void Player_vs_Computer_Game(int & Value);
 int main()
 {
     srand(time(NULL));
@@ -133,16 +134,44 @@ void Player_vs_Computer()
             decision_continue = true;
         }
     }
+
+    Player_vs_Computer_Game(Value);
+
+
+    while(Value != 0)
+    {
+        cout<<"\n\n Do you want to play again ?\n";
+        cout<<"Yes (y) , No (n) \n\t";
+        char play_again;
+        cin>>play_again;
+        if(play_again == 'y' || play_again == 'Y' )
+            Player_vs_Computer_Game(Value);
+
+    }
+    if(Value == 0)
+    {
+        cout<<"\n You lost all money ! \n\n Press ENTER to go back to Menu : ";
+        cin.get();
+        return ;
+    }
+
+
+    //completez in fisier
+    //if(decision_continue == false)    la final adaug in fisier sau modific existentul
+
+}
+void Player_vs_Computer_Game(int & Value)
+{
     cout<<"\n\t Your sum is : "<<Value<<endl;
     int bet;
-    cout<<"\n\t How much do you want to bet ?\n";
+    cout<<"\n\t How much do you want to bet ?\n\n\t";
     cin>>bet;
     while(bet<1 || bet > Value)
     {
         cout<<"Enter a bet between 1 and "<<Value<<endl;
         cin>>bet;
     }
-
+    system("cls");
     int PlayerCards[20] , HousCards[20] , NumbercardsP , NumbercardsH , ScoreP ,ScoreH ;
 
     PlayerCards[0] = NewCard();
@@ -154,15 +183,56 @@ void Player_vs_Computer()
     ScoreP = Score(PlayerCards , NumbercardsP);
     ScoreH = Score(HousCards , NumbercardsH);
 
-    cout<<"\n Your Cards are :\n\n";
-    for(int i=0;i<NumbercardsP;i++)
-        print_card(PlayerCards[i]);
-    cout<<"\n Your score is : "<<ScoreP;
-    cout<<"\n\n\n Dealer second card is : \n";
-    print_card(HousCards[1]);
+    Print_current_cards_and_score(PlayerCards , NumbercardsP);
+
+    cout<<"\n\n\n Dealer second card is : \n\n";
+    Print_card(HousCards[1]);
     cin.get();
     cin.get();
-    //if(decision_continue == false)    la final adaug in fisier sau modific existentul
+    char wantcard ;
+    cout<<"\n\n Do you want another card ? \n Yes (y) , No (n)\n\t";
+    cin>>wantcard;
+    while(wantcard == 'y' ||wantcard == 'Y' && ScoreP < 22)
+    {
+        cout<<"\n________________________________________________________________________________\n\n";
+        PlayerCards[NumbercardsP++] = NewCard();
+
+        Print_current_cards_and_score(PlayerCards , NumbercardsP);
+        ScoreP = Score(PlayerCards , NumbercardsP);
+        cout<<"\n\n Do you want another card ? \n Yes (y) , No (n)\n\t";
+        cin>>wantcard;
+        if(wantcard == 'n' ||wantcard == 'N')
+            break;
+    }
+
+    if(ScoreP > 21)
+    {
+        cout<<"\n\n\t\t You lost "<< bet <<'$';
+        Value = Value - bet;
+        cout<<"\n\n Your sum now is : "<<Value;
+        return;
+    }
+    while(ScoreH < 17)
+    {
+        HousCards[NumbercardsH++] = NewCard();
+        ScoreH = Score(HousCards , NumbercardsH);
+    }
+    cout<<"\n Dealer cards are :\n";
+    for(int i=0;i<NumbercardsH;i++)
+        Print_card(HousCards[i]);
+    cout<<"\n Dealer's score is : " << ScoreH <<"\n\n";
+    if(ScoreH > 21)
+    {
+        cout<<"\t You win "<<bet<<" $\n";
+        Value = Value + bet;
+    }
+    else
+    if(ScoreP == ScoreH)
+        cout<<"\n It's draw !\n\n";
+    else if(ScoreP == 21)
+    {
+        cout<<"";
+    }
 
 
 }
@@ -198,12 +268,20 @@ int Points( int card )
         return remnat + 1 ;
     return 10;
 }
-void print_card(int number)
+void Print_card(int number)
 {
     int color = number / 13;
     int rankk = number % 13;
-    cout<<Ranks[rankk]<<" of "<<Colors[color]<<endl;
+    cout<<"\t"<<Ranks[rankk]<<" of "<<Colors[color]<<endl;
 
+}
+void Print_current_cards_and_score(int cards[] , int numbercards)
+{
+    int ScoreCurrent = Score(cards, numbercards);
+    cout<<"\n Your Cards are :\n\n";
+    for(int i=0;i<numbercards;i++)
+        Print_card(cards[i]);
+    cout<<"\n Your score is : "<<ScoreCurrent<<endl;
 }
 
 
