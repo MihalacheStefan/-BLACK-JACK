@@ -296,6 +296,18 @@ int Can_continue(char name[41])
     fin.read(buffer , length);
     fin.close();
 
+    int nr=0;
+    char *parcurg = strchr(buffer , '\n');
+    while(parcurg)
+    {
+        nr++;
+        int i=1;
+        while(i<strlen(parcurg) && parcurg[i]!= '\n')
+            i++;
+        parcurg = strchr(parcurg+i ,'\n');
+    }
+    length = length - nr;
+
     ofstream fout("continue_name.txt");
     fout.write(buffer , length);
 
@@ -325,7 +337,7 @@ int Can_continue(char name[41])
     {
         nr_linii++;
         int i=1;
-        while(i<strlen(buffer) && buffer[i]!= '\n')
+        while(i<strlen(p) && p[i]!= '\n')
             i++;
         int ok=1;
         if(i == strlen(name)+1)
@@ -343,9 +355,61 @@ int Can_continue(char name[41])
 }
 int restore_value( int line )
 {
+    ifstream fin("continue_value.txt");
+    fin.seekg(0 ,fin.end);
+    int length = fin.tellg();
+    fin.seekg(0,fin.beg);
 
+    char * buffer = new char [length];
+    fin.read(buffer , length);
+    fin.close();
 
-    return 50;
+    int nr=0;
+    char *parcurg = strchr(buffer , '\n');
+    while(parcurg)
+    {
+        nr++;
+        int i=1;
+        while(i<strlen(parcurg) && parcurg[i]!= '\n')
+            i++;
+        parcurg = strchr(parcurg+i ,'\n');
+    }
+    length = length - nr;
+
+    ofstream fout("continue_value.txt");
+    fout.write(buffer , length);
+
+    buffer[length] = NULL;
+    int value = 0 ;
+    if(line == 1)
+    {
+        int i=0;
+        while(i<strlen(buffer) && buffer[i] != '\n')
+        {
+            value = value * 10 + ( buffer[i] - '0' );
+            i++;
+        }
+        return value;
+    }
+    char *p = buffer;
+    int nr_linii = 2;
+    p = strchr(buffer , '\n');
+    while( nr_linii != line)
+    {
+        nr_linii ++;
+        int i= 1 ;
+        while(i<strlen(p) && p[i] != '\n')
+            i++;
+        p=strchr(p+i, '\n');
+    }
+    int i=1;
+    while(i<strlen(p) && p[i] != '\n')
+    {
+        if(p[i] >= '0' && p[i]<= '9')
+            value = value * 10 + ( p[i] - '0' );
+        i++;
+    }
+    return value;
 }
 int Score(int Cards[] , int number)
 {
