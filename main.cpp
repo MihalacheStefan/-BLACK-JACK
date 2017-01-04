@@ -24,6 +24,7 @@ int Points( int card );
 void Print_card(int number);
 void Print_current_cards_and_score(int cards[] , int numbercards);
 void Player_vs_Computer_Game(int & Value);
+void Rewrite_value_file(int line , int value);
 int main()
 {
     srand(time(NULL));
@@ -123,7 +124,6 @@ void Player_vs_Computer()
     char name[41];
     int Value = 20;
     cin>>name;
-    bool decision_continue = false;
     int continue_file = Can_continue(name);
 
     if( continue_file != 0 )
@@ -137,11 +137,18 @@ void Player_vs_Computer()
             Value = restore_value(continue_file);
             if(Value == 0)
                 Value = 20;
-            decision_continue = true;
         }
     }
 
     Player_vs_Computer_Game(Value);
+
+    if(continue_file == 0)
+    {
+        //adaug numele in "continue_name"
+        //adaug Value pe linia nou creata
+    }
+    else
+        Rewrite_value_file(continue_file , Value);
 
     while(Value != 0)
     {
@@ -181,6 +188,8 @@ void Player_vs_Computer_Game(int & Value)
     while(bet<1 || bet > Value)
     {
         cout<<"Enter a bet between 1 and "<<Value<<endl;
+        cin.get();
+        cout<<'\t';
         cin>>bet;
     }
     system("cls");
@@ -454,4 +463,87 @@ void shuffle()
     for(int i=0;i<52;i++)
         CardsDealt[i] = false;
 }
+void Rewrite_value_file(int line , int value)
+{
+    ifstream fin("continue_value.txt");
+    fin.seekg(0 ,fin.end);
+    int length = fin.tellg();
+    fin.seekg(0,fin.beg);
 
+    char * buffer = new char [length];
+    fin.read(buffer , length);
+    fin.close();
+
+    int nr=0;
+    char *parcurg = strchr(buffer , '\n');
+    while(parcurg)
+    {
+        nr++;
+        int i=1;
+        while(i<strlen(parcurg) && parcurg[i]!= '\n')
+            i++;
+        parcurg = strchr(parcurg+i ,'\n');
+    }
+    length = length - nr;
+    buffer[length] = NULL;
+    char * p = buffer;
+    int nr_value_old = 0 ,nr_value_new = 0 ,invers[30] ,nr_cifre_invers = 0;
+
+    while(value != 0)
+    {
+        nr_value_new++;
+        invers[ nr_cifre_invers++ ] = value%10;
+        value = value/10;
+    }
+
+    if(line == 1)
+    {
+        while(nr_value_old < strlen(buffer) && buffer[nr_value_old] != '\n')
+            nr_value_old++;
+
+        p = strchr(buffer , '\n');
+        char copyy[length];
+        strcpy(copyy , p);
+
+        int i=0,k=0;
+        while(k < nr_cifre_invers)
+        {
+            buffer[i++] = invers[nr_cifre_invers-k-1] + '0';
+            k++;
+        }
+
+        strcpy(buffer + i , copyy);
+    }
+    else
+    {
+        int nr_linii = 2;
+        p = strchr(buffer , '\n');
+        while(nr_linii != line)
+        {
+            nr_linii ++;
+            int i= 1 ;
+            while(i<strlen(p) && p[i] != '\n')
+                i++;
+            p=strchr(p+i, '\n');
+        }
+        char copyy[length], *q;
+        q = strchr(p+1,'\n');
+        strcpy(copyy , q);
+
+        int j=1, k=0 ;
+        while(j<strlen(p) && p[j] != '\n')
+            j++;
+        nr_value_old = j-1;
+        j=1;
+        while(k < nr_cifre_invers )
+        {
+           p[j++] = invers[nr_cifre_invers-k-1] + '0';
+           k++;
+        }
+
+        strcpy(p+j , copyy);
+    }
+
+    ofstream fout("continue_value.txt");
+    fout.write(buffer , length - nr_value_old + nr_value_new );
+}
