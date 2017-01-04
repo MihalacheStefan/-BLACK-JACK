@@ -2,6 +2,8 @@
 #include <ctime>
 #include <cstring>
 #include <cstdlib>
+#include <fstream>
+#include <cstring>
 using namespace std;
 
 const string Ranks[13] = {"Ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King"};
@@ -15,8 +17,8 @@ void Menu();
 void Rules();
 int NewCard();
 void Player_vs_Computer();
-bool Can_continue(char name[41]);
-int restore_value();
+int Can_continue(char name[41]);
+int restore_value( int line ) ;
 int Score(int Cards[] , int number);
 int Points( int card );
 void Print_card(int number);
@@ -107,7 +109,7 @@ void Rules()
     cout<<"\t\t"<< "banker's hand, but without exceeding 21."<<'\n';
     cout<<"\t\t"<< "Blackjack is played with an international "<<'\n';
     cout<<"\t\t"<< "52-card deck without jokers."<<'\n';
-    cout<<"_______________________________________________________________________________"<<'\n';
+    cout<<"_______________________________________________________________________________\n"<<'\n';
     cout<<"Press ENTER to go back to Menu:";
     cin.get();
     cin.get();
@@ -122,14 +124,17 @@ void Player_vs_Computer()
     int Value = 20;
     cin>>name;
     bool decision_continue = false;
-    if(Can_continue(name) == true)
+    int continue_file = Can_continue(name);
+
+    if( continue_file != 0 )
     {
         cout<<"\n\t Do you want to continue ?\n";
+        cout<<"\n Yes (y) , No (n) \n\t";
         char decision;
         cin>>decision;
         if(decision == 'y' || decision == 'Y')
         {
-            Value = restore_value();
+            Value = restore_value(continue_file);
             if(Value == 0)
                 Value = 20;
             decision_continue = true;
@@ -149,8 +154,9 @@ void Player_vs_Computer()
                 shuffle();
                 Player_vs_Computer_Game(Value);
            }
-        else
-            return ;
+        else if(play_again == 'n' || play_again == 'N' )
+            break ;
+        else cout<<"\n\n Yes(y) or No (n) ?\n\t";
     }
     if(Value == 0)
     {
@@ -279,14 +285,67 @@ void Player_vs_Computer_Game(int & Value)
 
 
 }
-bool Can_continue(char name[41])
+int Can_continue(char name[41])
+{
+    ifstream fin("continue_name.txt");
+    fin.seekg(0 ,fin.end);
+    int length = fin.tellg();
+    fin.seekg(0,fin.beg);
+
+    char * buffer = new char [length];
+    fin.read(buffer , length);
+    fin.close();
+
+    ofstream fout("continue_name.txt");
+    fout.write(buffer , length);
+
+    buffer[length] = NULL;
+    if(strstr(buffer ,name ) == NULL)
+        return 0;
+    char *p = buffer;
+    int nr_linii = 0;
+    int i=0;
+    while(i<strlen(buffer) && buffer[i]!= '\n')
+            i++;
+    int ok=1;
+    if(i == strlen(name))
+    {
+        for(int j=0;j<strlen(name);j++)
+            if(buffer[j] != name[j])
+                ok=0;
+    }
+    else
+        ok=0;
+
+    nr_linii = 1 ;
+    if(ok == 1)
+        return nr_linii;
+    p=strchr(buffer ,'\n');
+    while(p)
+    {
+        nr_linii++;
+        int i=1;
+        while(i<strlen(buffer) && buffer[i]!= '\n')
+            i++;
+        int ok=1;
+        if(i == strlen(name)+1)
+        {
+            for(int j=0;j<strlen(name);j++)
+                if(p[j+1] != name[j])
+                    ok=0;
+        }
+        else ok=0;
+        if(ok == 1)
+            return nr_linii;
+        p = strchr(p+i,'\n');
+    }
+    return 0;
+}
+int restore_value( int line )
 {
 
-    return false;
-}
-int restore_value()
-{
-    return 0;
+
+    return 50;
 }
 int Score(int Cards[] , int number)
 {
