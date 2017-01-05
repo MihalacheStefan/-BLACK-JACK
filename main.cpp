@@ -25,6 +25,7 @@ void Print_card(int number);
 void Print_current_cards_and_score(int cards[] , int numbercards);
 void Player_vs_Computer_Game(int & Value);
 void Rewrite_value_file(int line , int value);
+int Add_new_line_in_file(char name[41]);
 int main()
 {
     srand(time(NULL));
@@ -119,7 +120,7 @@ void Rules()
 void Player_vs_Computer()
 {
     system("cls");
-    cout<<"Enter your name :\n";
+    cout<<"\n\tEnter your name :\n\n\t\t\t  ";
     cin.get();
     char name[41];
     int Value = 20;
@@ -128,15 +129,15 @@ void Player_vs_Computer()
 
     if( continue_file != 0 )
     {
-        cout<<"\n\t Do you want to continue ?\n";
-        cout<<"\n Yes (y) , No (n) \n\t";
-        char decision;
-        cin>>decision;
-        if(decision == 'y' || decision == 'Y')
+        int val = restore_value(continue_file);
+        if(val != 0)
         {
-            Value = restore_value(continue_file);
-            if(Value == 0)
-                Value = 20;
+            cout<<"\n Do you want to continue ?\n";
+            cout<<"\n Yes (y) , No (n) \n\t";
+            char decision;
+            cin>>decision;
+            if(decision == 'y' || decision == 'Y')
+                Value = val;
         }
     }
 
@@ -144,6 +145,9 @@ void Player_vs_Computer()
 
     if(continue_file == 0)
     {
+        int newline = Add_new_line_in_file(name);
+
+        Rewrite_value_file(newline , Value);
         //adaug numele in "continue_name"
         //adaug Value pe linia nou creata
     }
@@ -183,7 +187,7 @@ void Player_vs_Computer_Game(int & Value)
     system("cls");
     cout<<"\n\t Your sum is : "<<Value<<endl;
     int bet;
-    cout<<"\n\t How much do you want to bet ?\n\n\t";
+    cout<<"\n How much do you want to bet ?\n\n\t";
     cin>>bet;
     while(bet<1 || bet > Value)
     {
@@ -211,7 +215,7 @@ void Player_vs_Computer_Game(int & Value)
 
     if(ScoreP == 21)
     {
-        cout<<"\n\t\t BLACKJACK - 21 \n\n";
+        cout<<"\n\n\n\t\t BLACKJACK - 21 \n\n\n";
         cout<<"\t You win "<<bet<<" $ !\n\n";
         Value = Value + bet;
         cout<<"\n\n Your sum now is : "<<Value;
@@ -547,3 +551,74 @@ void Rewrite_value_file(int line , int value)
     ofstream fout("continue_value.txt");
     fout.write(buffer , length - nr_value_old + nr_value_new );
 }
+int Add_new_line_in_file(char name[41])
+{
+    int line = 1;
+    ifstream fin("continue_name.txt");
+    fin.seekg(0 ,fin.end);
+    int length = fin.tellg();
+    fin.seekg(0,fin.beg);
+
+    char * buffer = new char [length];
+    fin.read(buffer , length);
+    fin.close();
+
+    int nr=0;
+    char *parcurg = strchr(buffer , '\n');
+    while(parcurg)
+    {
+        nr++;
+        int i=1;
+        while(i<strlen(parcurg) && parcurg[i]!= '\n')
+            i++;
+        parcurg = strchr(parcurg+i ,'\n');
+    }
+    length = length - nr;
+    buffer[length] = NULL;
+    ofstream fout("continue_name.txt");
+    fout.write(buffer , length );
+
+    char *p = strchr(buffer , '\n');
+    while(p)
+    {
+        line++;
+        p = strchr(p+1 ,'\n');
+    }
+    fout.write(name,strlen(name));
+    fout.write("\n",1);
+    fout.close();
+    //  value file
+
+    ifstream ffin("continue_value.txt");
+    ffin.seekg(0 ,ffin.end);
+    length = ffin.tellg();
+    ffin.seekg(0,ffin.beg);
+
+     buffer = new char [length];
+    ffin.read(buffer , length);
+    ffin.close();
+
+    nr=0;
+    parcurg = strchr(buffer , '\n');
+    while(parcurg)
+    {
+        nr++;
+        int i=1;
+        while(i<strlen(parcurg) && parcurg[i]!= '\n')
+            i++;
+        parcurg = strchr(parcurg+i ,'\n');
+    }
+    length = length - nr;
+    buffer[length] = NULL;
+
+
+    ofstream ffout("continue_value.txt");
+    ffout.write(buffer , length );
+    ffout.write("0\n",2);
+
+    return line;
+}
+
+
+
+
