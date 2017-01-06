@@ -28,6 +28,8 @@ void Rewrite_value_file(int line , int value);
 int Add_new_line_in_file(char name[41]);
 void show_history_pvc();
 void show_hystory_pvc_buffer(char buffer[101]);
+void Add_new_history(int decision);
+
 
 int main()
 {
@@ -222,6 +224,7 @@ void Player_vs_Computer_Game(int & Value)
     {
         cout<<"\n\n\n\t\t BLACKJACK - 21 \n\n\n";
         cout<<"\t You win "<<bet<<" $ !\n\n";
+        Add_new_history(0);
         Value = Value + bet;
         cout<<"\n\n Your sum now is : "<<Value;
         return;
@@ -250,6 +253,7 @@ void Player_vs_Computer_Game(int & Value)
     if(ScoreP > 21)
     {
         cout<<"\n\n\t\t You lost "<< bet <<'$';
+        Add_new_history(1);
         Value = Value - bet;
         cout<<"\n\n Your sum now is : "<<Value;
         return;
@@ -259,29 +263,35 @@ void Player_vs_Computer_Game(int & Value)
         HousCards[NumbercardsH++] = NewCard();
         ScoreH = Score(HousCards , NumbercardsH);
     }
-    cout<<"\n Dealer cards are :\n";
+    cout<<"\n Dealer's cards are :\n";
     for(int i=0;i<NumbercardsH;i++)
         Print_card(HousCards[i]);
     cout<<"\n Dealer's score is : " << ScoreH <<"\n\n";
     if(ScoreH > 21)
     {
         cout<<"\t You win "<<bet<<" $ !\n";
+        Add_new_history(0);
         Value = Value + bet;
         cout<<"\n\n Your sum now is : "<<Value;
     }
     else
     if(ScoreP == ScoreH)
+    {
         cout<<"\n It's draw !\n\n";
+        Add_new_history(2);
+    }
     else if(ScoreP == 21)
     {
         cout<<"\n\t\t BLACKJACK - 21 \n\n";
         cout<<"\t You win "<<bet<<" $ !\n\n";
+        Add_new_history(0);
         Value = Value + bet;
         cout<<"\n\n Your sum now is : "<<Value;
     }
     else if(ScoreH == 21)
     {
         cout<<"\n\t You lost "<<bet<<" $ !\n";
+        Add_new_history(1);
         Value = Value - bet;
         cout<<"\n\n Your sum now is : "<<Value;
     }
@@ -290,12 +300,14 @@ void Player_vs_Computer_Game(int & Value)
         if(ScoreP >ScoreH)
         {
             cout<<"\t You win "<<bet<<" $ !\n\n";
+            Add_new_history(0);
             Value = Value + bet;
             cout<<"\n\n Your sum now is : "<<Value;
         }
         else
         {
             cout<<"\n\t You lost "<<bet<<" $ !\n";
+            Add_new_history(1);
             Value = Value - bet;
             cout<<"\n\n Your sum now is : "<<Value;
         }
@@ -700,5 +712,26 @@ void show_hystory_pvc_buffer(char buffer[101])
     }
     cout<<"\n\n  Press ENTER to continue . ";
 }
+void Add_new_history(int decision)
+{
+    ifstream fin("history_PvC.txt");
+    fin.seekg(0 ,fin.end);
+    int length = fin.tellg();
+    fin.seekg(0,fin.beg);
 
+    char * buffer = new char [length];
+    fin.read(buffer , length);
+    fin.close();
+
+    length = strlen(buffer);
+    buffer[length] = NULL;
+    ofstream fout("history_PvC.txt");
+    fout.write(buffer , length );
+    if(decision == 0)
+        fout.write("0\n" , 2);
+    if(decision == 1)
+        fout.write("1\n" , 2);
+    if(decision == 2)
+        fout.write("2\n" , 2);
+}
 
