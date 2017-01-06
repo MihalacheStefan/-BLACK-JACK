@@ -38,6 +38,9 @@
 		<Unit filename="continue_value.txt">
 			<Option target="&lt;{~None~}&gt;" />
 		</Unit>
+		<Unit filename="history_PvC.txt">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
 		<Unit filename="main.cpp" />
 		<Extensions>
 			<code_completion />

@@ -26,6 +26,9 @@ void Print_current_cards_and_score(int cards[] , int numbercards);
 void Player_vs_Computer_Game(int & Value);
 void Rewrite_value_file(int line , int value);
 int Add_new_line_in_file(char name[41]);
+void show_history_pvc();
+void show_hystory_pvc_buffer(char buffer[101]);
+
 int main()
 {
     srand(time(NULL));
@@ -42,7 +45,7 @@ int main()
             if(optiune == 2)
                 Player_vs_Computer();
             if(optiune == 3)
-                ;
+                show_history_pvc();
             system("cls");
     }while(optiune != 4);
 
@@ -112,7 +115,7 @@ void Rules()
     cout<<"\t\t"<< "Blackjack is played with an international "<<'\n';
     cout<<"\t\t"<< "52-card deck without jokers."<<'\n';
     cout<<"_______________________________________________________________________________\n"<<'\n';
-    cout<<"Press ENTER to go back to Menu:";
+    cout<<"Press ENTER to go back to Menu . ";
     cin.get();
     cin.get();
 
@@ -160,6 +163,7 @@ void Player_vs_Computer()
         cout<<"Yes (y) , No (n) \n\t";
         char play_again;
         cin>>play_again;
+
         if(play_again == 'y' || play_again == 'Y' )
            {
                 shuffle();
@@ -167,7 +171,8 @@ void Player_vs_Computer()
            }
         else if(play_again == 'n' || play_again == 'N' )
             break ;
-        else cout<<"\n\n Yes(y) or No (n) ?\n\t";
+        else
+            cout<<"******************************************************";
     }
     if(Value == 0)
     {
@@ -618,7 +623,82 @@ int Add_new_line_in_file(char name[41])
 
     return line;
 }
+void show_history_pvc()
+{
+    system("cls");
+    ifstream fin("history_PvC.txt");
+    fin.seekg(0 ,fin.end);
+    int length = fin.tellg();
+    fin.seekg(0,fin.beg);
 
+    char * buffer = new char [length];
+    fin.read(buffer , length);
+    fin.close();
+    int nr=0;
+    char *parcurg = strchr(buffer , '\n');
+    while(parcurg)
+    {
+        nr++;
+        int i=1;
+        while(i<strlen(parcurg) && parcurg[i]!= '\n')
+            i++;
+        parcurg = strchr(parcurg+i ,'\n');
+    }
+    length = length - nr;
+    buffer[length] = NULL;
 
+    ofstream fout("history_PvC.txt");
+
+    int line ;
+    if(nr > 10)
+        line = nr-10;
+    else
+        line = 0;
+    if(line == 0)
+      {
+        fout.write(buffer , length );
+        show_hystory_pvc_buffer(buffer);
+      }
+    else
+    {
+        char *p = buffer;
+        int i=1;
+        p = strchr(buffer, '\n');
+        if(line != 1 )
+            while(i<line)
+            {
+                p=strchr(p+1,'\n');
+                i++;
+            }
+        strcpy(p ,p+1);     //sterg endl
+        fout.write(p , strlen(p));
+        show_hystory_pvc_buffer(p);
+    }
+    cin.get();
+    cin.get();
+}
+void show_hystory_pvc_buffer(char buffer[101])
+{
+    int n = strlen(buffer);
+    int i=0,t=1;
+    cout<<"\n\n\t\t   History \n\n\n";
+    while(i<n )
+    {
+        if(t != 10)
+            cout<<"\t"<<t<<".  ";
+        else
+            cout<<"\t"<<t<<". ";
+        t++;
+        if(buffer[i] == '0')
+            cout<<"Win\n";
+        else
+            if(buffer[i] == '1')
+                cout<<"Lose\n";
+        else
+            cout<<"Draw\n";
+        i=i+2;
+    }
+    cout<<"\n\n  Press ENTER to continue . ";
+}
 
 
