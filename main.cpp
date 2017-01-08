@@ -29,7 +29,9 @@ int Add_new_line_in_file(char name[41]);
 void show_history_pvc();
 void show_hystory_pvc_buffer(char buffer[101]);
 void Add_new_history(int decision);
-
+void Player_vs_Player();
+void Player_vs_Player_Game( char name1[41] ,char name2[41] ,int Value1 ,int Value2 ,int bet );
+void Get_new_card_new_score(int PlayerCards[] ,int &Numbercards ,int &Scoree);
 
 int main()
 {
@@ -217,7 +219,7 @@ void Player_vs_Computer_Game(int & Value)
 
     Print_current_cards_and_score(PlayerCards , NumbercardsP);
 
-    cout<<"\n\n\n Dealer second card is : \n\n";
+    cout<<"\n\n\n Dealer's second card is : \n\n";
     Print_card(HousCards[1]);
 
     if(ScoreP == 21)
@@ -230,25 +232,7 @@ void Player_vs_Computer_Game(int & Value)
         return;
     }
 
-    char wantcard ;
-    cout<<"\n\n Do you want another card ? \n Yes (y) , No (n)\n\t";
-    cin>>wantcard;
-    while(wantcard == 'y' ||wantcard == 'Y' && ScoreP < 22)
-    {
-        cout<<"\n________________________________________________________________________________\n\n";
-        PlayerCards[NumbercardsP++] = NewCard();
-
-        Print_current_cards_and_score(PlayerCards , NumbercardsP);
-        ScoreP = Score(PlayerCards , NumbercardsP);
-        if(ScoreP < 22)
-        {
-            cout<<"\n\n Do you want another card ? \n Yes (y) , No (n)\n\t";
-            cin>>wantcard;
-            if(wantcard == 'n' ||wantcard == 'N')
-                break;
-        }
-        else wantcard = 'n';
-    }
+    Get_new_card_new_score(PlayerCards , NumbercardsP ,ScoreP);
 
     if(ScoreP > 21)
     {
@@ -734,4 +718,103 @@ void Add_new_history(int decision)
     if(decision == 2)
         fout.write("2\n" , 2);
 }
+void Player_vs_Player()
+{
+    system("cls");
+    cout<<"\n\n\t\t\t Player vs Player mode \n\n\n";
+    char name1[41], name2[41];
+    cout<<"  Player 1 enter your name : ";
+    cin>>name1;
+    cout<<"\n\n  Player 2 enter your name : ";
+    cin>>name2;
+    int Value1 = 20 ,Value2 = 20 , bet;
+    cout<<"\n\n Your initial sum is : 20 $ ";
+    cout<<"\n\n Enter your bet : ";
+    cin>>bet;
+    while(bet > 20 || bet < 1)
+    {
+        cout<<"\n\n Enter a bet between 1 and 20 : ";
+        cin>>bet;
+    }
+    cout<<"\n\n\t Press ENTER to continue :";
+    cin.get();
+    Player_vs_Player_Game(name1 , name2, Value1 ,Value2 , bet);
+}
+void Player_vs_Player_Game( char name1[41] ,char name2[41] ,int Value1 ,int Value2 ,int bet )
+{
+    system("cls");
+    int Player1Cards[20] , Player2Cards[20] , HouseCards[20] , NumbercardsP1 , NumbercardsP2 , NumbercardsH , ScoreP1 , ScoreP2 ,ScoreH ;
 
+    Player1Cards[0] = NewCard();
+    Player1Cards[1] = NewCard();
+    NumbercardsP1 = 2;
+    Player2Cards[0] = NewCard();
+    Player2Cards[1] = NewCard();
+    NumbercardsP2 = 2;
+    HouseCards[0] = NewCard();
+    HouseCards[1] = NewCard();
+    NumbercardsH = 2;
+
+    ScoreP1 = Score(Player1Cards , NumbercardsP1);
+    ScoreP2 = Score(Player2Cards , NumbercardsP2);
+    ScoreH = Score(HouseCards , NumbercardsH);
+
+    cout<<"\n\n\n "<<name1 <<"'s second card is : \n\n";
+    Print_card(Player1Cards[1]);
+
+    cout<<"\n\n "<<name2 <<"'s second card is : \n\n";
+    Print_card(Player1Cards[1]);
+
+    cout<<"\n\n Dealer's second card is : \n\n";
+    Print_card(Player1Cards[1]);
+
+    cout<<"\n\n\t Press ENTER to continue : ";
+    cin.get();
+
+    system("cls");
+    cout<<"\n\n  Player 1 turn !";
+    cout<<"\n\n\t Press ENTER to continue : ";
+    cin.get();
+
+    system("cls");
+    cout<<"\n";
+    Print_current_cards_and_score(Player1Cards , NumbercardsP1);
+    Get_new_card_new_score(Player1Cards, NumbercardsP1 ,ScoreP1);
+    cout<<"\n\n\t Press ENTER to continue : ";
+    cin.get();
+
+    system("cls");
+    cout<<"\n\n  Player 2 turn !";
+    cout<<"\n\n\t Press ENTER to continue : ";
+    cin.get();
+
+    system("cls");
+    cout<<"\n";
+    Print_current_cards_and_score(Player2Cards , NumbercardsP2);
+    Get_new_card_new_score(Player2Cards ,NumbercardsP2 ,ScoreP2);
+    cout<<"\n\n\t Press ENTER to continue : ";
+    cin.get();
+
+}
+void Get_new_card_new_score(int PlayerCards[] ,int &Numbercards ,int &Scoree)
+{
+    char wantcard ;
+    cout<<"\n\n Do you want another card ? \n Yes (y) , No (n)\n\t";
+    cin>>wantcard;
+    while(wantcard == 'y' ||wantcard == 'Y' && Scoree < 22)
+    {
+        cout<<"\n________________________________________________________________________________\n\n";
+        PlayerCards[Numbercards++] = NewCard();
+
+        Print_current_cards_and_score(PlayerCards , Numbercards);
+        Scoree = Score(PlayerCards , Numbercards);
+        if(Scoree < 22)
+        {
+            cout<<"\n\n Do you want another card ? \n Yes (y) , No (n)\n\t";
+            cin>>wantcard;
+            if(wantcard == 'n' ||wantcard == 'N')
+                break;
+        }
+        else wantcard = 'n';
+    }
+}
