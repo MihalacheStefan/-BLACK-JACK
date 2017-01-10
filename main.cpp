@@ -30,8 +30,9 @@ void show_history_pvc();
 void show_hystory_pvc_buffer(char buffer[101]);
 void Add_new_history(int decision);
 void Player_vs_Player();
-void Player_vs_Player_Game( char name1[41] ,char name2[41] ,int Value1 ,int Value2 ,int bet );
+void Player_vs_Player_Game( char name1[41] ,char name2[41] ,int &Value1 ,int &Value2 ,int bet );
 void Get_new_card_new_score(int PlayerCards[] ,int &Numbercards ,int &Scoree);
+int winner_pvp(int ScoreP1 ,int ScoreP2 , int ScoreH);
 
 int main()
 {
@@ -49,9 +50,11 @@ int main()
             if(optiune == 2)
                 Player_vs_Computer();
             if(optiune == 3)
+                Player_vs_Player();
+            if(optiune == 4)
                 show_history_pvc();
             system("cls");
-    }while(optiune != 4);
+    }while(optiune != 5);
 
     return 0;
 }
@@ -99,9 +102,10 @@ void Menu()
     cout <<"\n\n"<<"\t\t\t\t       Menu "<<"\n\n" ;
     cout <<"\t\t\t"<<"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"<<endl;
     cout <<"\t\t\t"<<"1. Rules ------------------------|"<<endl;
-    cout <<"\t\t\t"<<"2. Player vs. Computer ----------|"<<endl;
-    cout <<"\t\t\t"<<"3. History ----------------------|"<<endl;
-    cout <<"\t\t\t"<<"4. Exit--------------------------|"<<endl;
+    cout <<"\t\t\t"<<"2. Player vs Computer -----------|"<<endl;
+    cout <<"\t\t\t"<<"3. Player vs Player -------------|"<<endl;
+    cout <<"\t\t\t"<<"4. History ----------------------|"<<endl;
+    cout <<"\t\t\t"<<"5. Exit--------------------------|"<<endl;
     cout <<"\t\t\t"<<"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"<<endl;
     cout <<"\n\t\t"<<"Enter your option : ";
 }
@@ -739,8 +743,54 @@ void Player_vs_Player()
     cout<<"\n\n\t Press ENTER to continue :";
     cin.get();
     Player_vs_Player_Game(name1 , name2, Value1 ,Value2 , bet);
+
+
+     while(Value1 != 0 && Value2 != 0)
+    {
+        system("cls");
+        cout<<"\n "<<name1<<"'s sum is : "<< Value1 <<"\n";
+        cout<<"\n "<<name2<<"'s sum is : "<< Value2 <<"\n";
+
+        cout<<"\n\n Do you want to play again ?\n";
+        cout<<"Yes (y) , No (n) \n\t";
+        char play_again;
+        cin>>play_again;
+
+        while(play_again != 'y' && play_again != 'Y' && play_again != 'n' && play_again != 'N')
+            {
+                cout<<"\n\t Enter y or n ! \n\t\t";
+                cin>>play_again;
+            }
+
+        if(play_again == 'y' || play_again == 'Y' )
+           {
+                shuffle();
+
+                Player_vs_Player_Game(name1 , name2, Value1 ,Value2 , bet);
+           }
+        else if(play_again == 'n' || play_again == 'N' )
+            break ;
+
+    }
+    system("cls");
+    if(Value1 == 0)
+    {
+        cout<<"\n\n\t"<<name1<<" lost all money !" ;
+        cout<<"\n\n\n\t"<<name2<<" is the winner !";
+        cout<<"\n\n Press ENTER to continue :";
+        cin.get();
+    }
+    if(Value2 == 0)
+    {
+        cout<<"\n\n\t"<<name2<<" lost all money !" ;
+        cout<<"\n\n\n\t"<<name1<<" is the winner !";
+        cout<<"\n\n Press ENTER to continue :";
+        cin.get();
+    }
+
+
 }
-void Player_vs_Player_Game( char name1[41] ,char name2[41] ,int Value1 ,int Value2 ,int bet )
+void Player_vs_Player_Game( char name1[41] ,char name2[41] ,int &Value1 ,int &Value2 ,int bet )
 {
     system("cls");
     int Player1Cards[20] , Player2Cards[20] , HouseCards[20] , NumbercardsP1 , NumbercardsP2 , NumbercardsH , ScoreP1 , ScoreP2 ,ScoreH ;
@@ -763,10 +813,10 @@ void Player_vs_Player_Game( char name1[41] ,char name2[41] ,int Value1 ,int Valu
     Print_card(Player1Cards[1]);
 
     cout<<"\n\n "<<name2 <<"'s second card is : \n\n";
-    Print_card(Player1Cards[1]);
+    Print_card(Player2Cards[1]);
 
     cout<<"\n\n Dealer's second card is : \n\n";
-    Print_card(Player1Cards[1]);
+    Print_card(HouseCards[1]);
 
     cout<<"\n\n\t Press ENTER to continue : ";
     cin.get();
@@ -795,6 +845,52 @@ void Player_vs_Player_Game( char name1[41] ,char name2[41] ,int Value1 ,int Valu
     cout<<"\n\n\t Press ENTER to continue : ";
     cin.get();
 
+    while(ScoreH < 17)
+    {
+        HouseCards[NumbercardsH++] = NewCard();
+        ScoreH = Score(HouseCards , NumbercardsH);
+    }
+    // afisez toate cartile
+    system("cls");
+
+    cout<<"\n\n "<<name1<<"'s cards are :\n";
+    for(int i=0;i<NumbercardsP1;i++)
+        Print_card(Player1Cards[i]);
+    cout<<"\n "<<name1<<"'s score is : "<< ScoreP1<<"\n\n";
+
+    cout<<"\n\n "<<name2<<"'s cards are :\n";
+    for(int i=0;i<NumbercardsP2;i++)
+        Print_card(Player2Cards[i]);
+    cout<<"\n "<<name2<<"'s score is : " << ScoreP2 <<"\n\n";
+
+    cout<<"\n Dealer's cards are :\n";
+    for(int i=0;i<NumbercardsH;i++)
+        Print_card(HouseCards[i]);
+    cout<<"\n Dealer's score is : " << ScoreH <<"\n\n\n\t";
+
+    int win = winner_pvp(ScoreP1 ,ScoreP2 ,ScoreH);
+    if(win == 0)
+        cout<<"It's draw !";
+    if(win == 1)
+    {
+        cout<<name1<<" win !";
+        Value1 = Value1 + 2*bet;
+        Value2 = Value2 - bet ;
+    }
+    if(win == 2)
+    {
+        cout<<name2<<" win !";
+        Value2 = Value2 + 2*bet;
+        Value1 = Value1 - bet ;
+    }
+    if(win == 3)
+    {
+        cout<<"Dealer win !";
+        Value1 = Value1 - bet;
+        Value2 = Value2 - bet;
+    }
+    cout<<"\n\n\t Press ENTER to continue : ";
+    cin.get();
 }
 void Get_new_card_new_score(int PlayerCards[] ,int &Numbercards ,int &Scoree)
 {
@@ -815,6 +911,54 @@ void Get_new_card_new_score(int PlayerCards[] ,int &Numbercards ,int &Scoree)
             if(wantcard == 'n' ||wantcard == 'N')
                 break;
         }
-        else wantcard = 'n';
+        else {
+                wantcard = 'n';
+                cin.get();
+        }
     }
 }
+int winner_pvp(int ScoreP1 ,int ScoreP2 , int ScoreH)
+{
+    int nr21 =0;
+    if(ScoreP1 == 21)
+        nr21++;
+    if(ScoreP2 == 21)
+        nr21++;
+    if(ScoreH == 21)
+        nr21++;
+    if(nr21 == 2 || nr21 == 3)
+        return 0;
+
+    if(ScoreP1 == 21)
+        return 1;
+    if(ScoreP2 == 21)
+        return 2;
+    if(ScoreH == 21)
+        return 3;
+    int maxim=0,nr=0;
+    if(maxim < ScoreP1 && ScoreP1 < 21)
+        maxim = ScoreP1;
+    if(maxim < ScoreP2 && ScoreP2 < 21)
+        maxim =ScoreP2;
+    if(maxim < ScoreH && ScoreH < 21)
+        maxim =ScoreH;
+
+    if(maxim == ScoreP1)
+        nr++;
+    if(maxim == ScoreP2)
+        nr++;
+    if(maxim == ScoreH)
+        nr++;
+    if(nr == 2 || nr == 3 || nr == 0)
+        return 0;
+
+    if(maxim == ScoreP1)
+        return 1;
+    if(maxim == ScoreP2)
+        return 2;
+    if(maxim == ScoreH)
+        return 3;
+}
+
+
+
