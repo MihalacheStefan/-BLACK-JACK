@@ -33,6 +33,7 @@ void Player_vs_Player();
 void Player_vs_Player_Game( char name1[41] ,char name2[41] ,int &Value1 ,int &Value2 ,int bet );
 void Get_new_card_new_score(int PlayerCards[] ,int &Numbercards ,int &Scoree);
 int winner_pvp(int ScoreP1 ,int ScoreP2 , int ScoreH);
+int bettok();
 
 int main()
 {
@@ -41,20 +42,25 @@ int main()
     cout<< "                        Press ENTER to continue!"<<endl;
     cin.get();
     system("cls");
-    int optiune;
+    char optiune;
     do {
             Menu();
             cin>>optiune;
-            if(optiune == 1)
+            while(optiune != '1' && optiune !='2' && optiune != '3' && optiune != '4' && optiune != '5')
+            {
+                cout<<"\n\n\t Enter a value between 1 and 5 : ";
+                cin>>optiune ;
+            }
+            if(optiune == '1')
                 Rules();
-            if(optiune == 2)
+            if(optiune == '2')
                 Player_vs_Computer();
-            if(optiune == 3)
+            if(optiune == '3')
                 Player_vs_Player();
-            if(optiune == 4)
+            if(optiune == '4')
                 show_history_pvc();
             system("cls");
-    }while(optiune != 5);
+    }while(optiune != '5');
 
     return 0;
 }
@@ -104,7 +110,7 @@ void Menu()
     cout <<"\t\t\t"<<"1. Rules ------------------------|"<<endl;
     cout <<"\t\t\t"<<"2. Player vs Computer -----------|"<<endl;
     cout <<"\t\t\t"<<"3. Player vs Player -------------|"<<endl;
-    cout <<"\t\t\t"<<"4. History ----------------------|"<<endl;
+    cout <<"\t\t\t"<<"4. History PvC-------------------|"<<endl;
     cout <<"\t\t\t"<<"5. Exit--------------------------|"<<endl;
     cout <<"\t\t\t"<<"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"<<endl;
     cout <<"\n\t\t"<<"Enter your option : ";
@@ -147,17 +153,23 @@ void Player_vs_Computer()
             cout<<"\n Yes (y) , No (n) \n\t";
             char decision;
             cin>>decision;
+            while(decision != 'y' && decision != 'Y' && decision != 'n' && decision != 'N')
+            {
+                cout<<"\n\n\t Enter y or n ! \n\t\t";
+                cin>>decision;
+            }
             if(decision == 'y' || decision == 'Y')
                 Value = val;
+
         }
     }
 
     Player_vs_Computer_Game(Value);
-
+    int linie;
     if(continue_file == 0)
     {
         int newline = Add_new_line_in_file(name);
-
+        linie = newline;
         Rewrite_value_file(newline , Value);
         //adaug numele in "continue_name"
         //adaug Value pe linia nou creata
@@ -176,16 +188,19 @@ void Player_vs_Computer()
            {
                 shuffle();
                 Player_vs_Computer_Game(Value);
+                if(continue_file == 0)
+                    Rewrite_value_file(linie , Value);
+                else
+                    Rewrite_value_file(continue_file , Value);
            }
         else if(play_again == 'n' || play_again == 'N' )
             break ;
         else
-            cout<<"******************************************************";
+            cout<<"******************************************************\n Enter y or n ! ";
     }
     if(Value == 0)
     {
         cout<<"\n\n\n\t You lost all money ! \n\n Press ENTER to go back to Menu : ";
-        cin.get();
         cin.get();
         return ;
     }
@@ -199,15 +214,14 @@ void Player_vs_Computer_Game(int & Value)
 {
     system("cls");
     cout<<"\n\t Your sum is : "<<Value<<endl;
-    int bet;
     cout<<"\n How much do you want to bet ?\n\n\t";
-    cin>>bet;
+    int bet=bettok();
+
     while(bet<1 || bet > Value)
     {
-        cout<<"Enter a bet between 1 and "<<Value<<endl;
-        cin.get();
+        cout<<"\n Enter a bet between 1 and "<<Value<<endl;
         cout<<'\t';
-        cin>>bet;
+        bet = bettok();
     }
     system("cls");
     int PlayerCards[20] , HousCards[20] , NumbercardsP , NumbercardsH , ScoreP ,ScoreH ;
@@ -734,11 +748,11 @@ void Player_vs_Player()
     int Value1 = 20 ,Value2 = 20 , bet;
     cout<<"\n\n Your initial sum is : 20 $ ";
     cout<<"\n\n Enter your bet : ";
-    cin>>bet;
+    bet = bettok();
     while(bet > 20 || bet < 1)
     {
         cout<<"\n\n Enter a bet between 1 and 20 : ";
-        cin>>bet;
+        bet =bettok();
     }
     cout<<"\n\n\t Press ENTER to continue :";
     cin.get();
@@ -765,7 +779,16 @@ void Player_vs_Player()
         if(play_again == 'y' || play_again == 'Y' )
            {
                 shuffle();
-
+                cout<<"\n\n Enter your bet : ";
+                bet = bettok();
+                int minim=Value1;
+                if(Value2 < minim)
+                    minim = Value2;
+                while(bet > minim || bet < 1)
+                {
+                    cout<<"\n Enter a bet between 1 and "<<minim<<" : ";
+                    bet =bettok();
+                }
                 Player_vs_Player_Game(name1 , name2, Value1 ,Value2 , bet);
            }
         else if(play_again == 'n' || play_again == 'N' )
@@ -897,6 +920,11 @@ void Get_new_card_new_score(int PlayerCards[] ,int &Numbercards ,int &Scoree)
     char wantcard ;
     cout<<"\n\n Do you want another card ? \n Yes (y) , No (n)\n\t";
     cin>>wantcard;
+    while(wantcard != 'y' && wantcard != 'Y' && wantcard != 'n' && wantcard !='N' )
+    {
+        cout<<"\n Enter y or n ! \n\t";
+        cin>>wantcard;
+    }
     while(wantcard == 'y' ||wantcard == 'Y' && Scoree < 22)
     {
         cout<<"\n________________________________________________________________________________\n\n";
@@ -908,6 +936,11 @@ void Get_new_card_new_score(int PlayerCards[] ,int &Numbercards ,int &Scoree)
         {
             cout<<"\n\n Do you want another card ? \n Yes (y) , No (n)\n\t";
             cin>>wantcard;
+            while(wantcard == 'y' && wantcard == 'Y' && wantcard != 'n' && wantcard !='N' )
+            {
+                cout<<"\n Enter y or n ! \n\t";
+                cin>>wantcard;
+            }
             if(wantcard == 'n' ||wantcard == 'N')
                 break;
         }
@@ -959,6 +992,33 @@ int winner_pvp(int ScoreP1 ,int ScoreP2 , int ScoreH)
     if(maxim == ScoreH)
         return 3;
 }
-
-
+int bettok()
+{
+    int bet=0;
+    int i=0;
+    char bett[11];
+    cin>>bett;
+    bool betok = true;
+    do{
+        if(betok == false)
+        {
+            cout<<"\n Enter an inter value ! \n\t";
+            cin>>bett;
+        }
+        betok = true;
+        int i=0;
+        while(i<strlen(bett))
+        {
+            if(bett[i]>= '0' && bett[i] <='9')
+                bet = bet *10 + bett[i] - '0';
+            else
+            {
+                betok = false;
+                break;
+            }
+            i++;
+        }
+    }while(betok == false);
+    return bet;
+}
 
