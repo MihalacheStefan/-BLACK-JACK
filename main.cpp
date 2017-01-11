@@ -243,9 +243,9 @@ void Player_vs_Computer_Game(int & Value)
     if(ScoreP == 21)
     {
         cout<<"\n\n\n\t\t BLACKJACK - 21 \n\n\n";
-        cout<<"\t You win "<<bet<<" $ !\n\n";
+        cout<<"\t You win "<<bet+bet/2<<" $ !\n\n";
         Add_new_history(0);
-        Value = Value + bet;
+        Value = Value + bet + bet/2;
         cout<<"\n\n Your sum now is : "<<Value;
         return;
     }
@@ -724,9 +724,19 @@ void Add_new_history(int decision)
     char * buffer = new char [length];
     fin.read(buffer , length);
     fin.close();
-
-    length = strlen(buffer);
+    int nr=0;
+    char *parcurg = strchr(buffer , '\n');
+    while(parcurg)
+    {
+        nr++;
+        int i=1;
+        while(i<strlen(parcurg) && parcurg[i]!= '\n')
+            i++;
+        parcurg = strchr(parcurg+i ,'\n');
+    }
+    length = length - nr;
     buffer[length] = NULL;
+
     ofstream fout("history_PvC.txt");
     fout.write(buffer , length );
     if(decision == 0)
@@ -735,6 +745,7 @@ void Add_new_history(int decision)
         fout.write("1\n" , 2);
     if(decision == 2)
         fout.write("2\n" , 2);
+    fout.close();
 }
 void Player_vs_Player()
 {
@@ -845,7 +856,7 @@ void Player_vs_Player_Game( char name1[41] ,char name2[41] ,int &Value1 ,int &Va
     cin.get();
 
     system("cls");
-    cout<<"\n\n  Player 1 turn !";
+    cout<<"\n\n  "<<name1<<" turn !";
     cout<<"\n\n\t Press ENTER to continue : ";
     cin.get();
 
@@ -857,7 +868,7 @@ void Player_vs_Player_Game( char name1[41] ,char name2[41] ,int &Value1 ,int &Va
     cin.get();
 
     system("cls");
-    cout<<"\n\n  Player 2 turn !";
+    cout<<"\n\n  "<<name2<<" turn !";
     cout<<"\n\n\t Press ENTER to continue : ";
     cin.get();
 
@@ -936,7 +947,7 @@ void Get_new_card_new_score(int PlayerCards[] ,int &Numbercards ,int &Scoree)
         {
             cout<<"\n\n Do you want another card ? \n Yes (y) , No (n)\n\t";
             cin>>wantcard;
-            while(wantcard == 'y' && wantcard == 'Y' && wantcard != 'n' && wantcard !='N' )
+            while(wantcard != 'y' && wantcard != 'Y' && wantcard != 'n' && wantcard !='N' )
             {
                 cout<<"\n Enter y or n ! \n\t";
                 cin>>wantcard;
