@@ -32,6 +32,12 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
+		<Unit filename="Functii.cpp">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="Headerr.h">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
 		<Unit filename="continue_name.txt">
 			<Option target="&lt;{~None~}&gt;" />
 		</Unit>
