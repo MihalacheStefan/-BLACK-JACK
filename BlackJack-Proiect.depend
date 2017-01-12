@@ -1,9 +1,15 @@
 # depslib dependency file v1.0
-1484159170 source:c:\users\srefan\desktop\blackjack-proiect\main.cpp
+1484160098 source:c:\users\srefan\desktop\blackjack-proiect\main.cpp
+	"Headerr.h"
+	"Functii.cpp"
+
+1484251566 c:\users\srefan\desktop\blackjack-proiect\headerr.h
 	<iostream>
 	<ctime>
 	<cstring>
 	<cstdlib>
 	<fstream>
 	<cstring>
+
+1484251569 c:\users\srefan\desktop\blackjack-proiect\functii.cpp
 

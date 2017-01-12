@@ -34,3 +34,4 @@ void Player_vs_Player_Game( char name1[41] ,char name2[41] ,int &Value1 ,int &Va
 void Get_new_card_new_score(int PlayerCards[] ,int &Numbercards ,int &Scoree);
 int winner_pvp(int ScoreP1 ,int ScoreP2 , int ScoreH);
 int bettok();
+bool samename( char name1[41] ,char name2[41]);

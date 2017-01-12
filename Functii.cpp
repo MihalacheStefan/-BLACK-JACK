@@ -134,6 +134,10 @@ void Player_vs_Computer()
     }
     if(Value == 0)
     {
+        if(continue_file == 0)
+            Rewrite_value_file(linie , Value);
+        else
+            Rewrite_value_file(continue_file , Value);
         cout<<"\n\n\n\t You lost all money ! \n\n Press ENTER to go back to Menu : ";
         cin.get();
         return ;
@@ -690,6 +694,15 @@ void Player_vs_Player()
     cin>>name1;
     cout<<"\n\n  Player 2 enter your name : ";
     cin>>name2;
+
+    while(samename(name1 , name2) == true)
+    {
+        cout<<"\n\n\t Enter different names !\n\n";
+        cout<<"  Player 1 enter your name : ";
+        cin>>name1;
+        cout<<"\n\n  Player 2 enter your name : ";
+        cin>>name2;
+    }
     int Value1 = 20 ,Value2 = 20 , bet;
     cout<<"\n\n Your initial sum is : 20 $ ";
     cout<<"\n\n Enter your bet : ";
@@ -966,3 +979,15 @@ int bettok()
     }while(betok == false);
     return bet;
 }
+bool samename( char name1[41] ,char name2[41])
+{
+    if(strlen(name1) != strlen(name2))
+        return false;
+    for(int i=0;i<strlen(name1);i++)
+        if(name1[i] != name2[i])
+            return false;
+    return true;
+}
+
+
+
